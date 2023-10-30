@@ -1,0 +1,232 @@
+<div class="app-container">
+  <header class="header">
+    <h1 style="background-color: #000; color: #fff; padding: 5px;">Subscriptions Management</h1>
+    <!-- You can add additional content inside the header as needed -->
+  </header>
+
+  <div class="tabbed-navigation">
+    <div class="tab-menu">
+      <ul>
+        <li [class.active]="activeTab === 'Customer'" (click)="activateTab('Customer')">
+          🧑‍💼 Customer
+        </li>
+        
+        <li [class.active]="activeTab === 'Publications'" (click)="activateTab('Publications')">
+          📚 Publications
+        </li>
+        <li [class.active]="activeTab === 'Subscription'" (click)="activateTab('Subscription')">
+          📋 Subscription
+        </li>
+
+        <!-- Add more tabs as needed -->
+      </ul>
+    </div>
+
+    <div class="tab-content">
+      <div class="center-container">
+        <ng-container *ngIf="activeTab === 'Customer'" style="align-content:center">
+
+          <!-- Content for the Customer tab -->
+          <!-- Content for the Customer tab -->
+          <table>
+            <tr>
+              <td> <h2 class="customer-heading">Customer Details</h2></td>
+              <td></td>
+              <td> <button class="delete-button" (click)="showAddCustomerPopup = true">Add New Customer</button></td>
+            </tr>
+          </table>
+          <div class="modal-container" *ngIf="showAddCustomerPopup">
+            <div class="modal-content">
+              <h2>Add New Customer</h2>
+              <form (submit)="addCustomer()">
+                <table>
+                  <tr><td>
+                    <label for="id">ID:</label></td>
+                    <td><input type="text" id="id_no" name="id_no" [(ngModel)]="newCustomer.id_no" required></td>
+                  </tr>
+                 <tr><td> <label for="name">Name:</label></td>
+                  <td>  <input type="text" id="name" name="name" [(ngModel)]="newCustomer.name" required></td></tr>
+                 <tr><td> <label for="address">Address:</label></td>
+                  <td><input type="text" id="address" name="address" [(ngModel)]="newCustomer.address" required></td></tr>
+                  <tr></tr>
+                  <tr><td><button type="submit" class="delete-button">Add Customer</button></td>
+                      <td> <button class="delete-button" (click)="showAddCustomerPopup = false">Close</button></td></tr>                
+   
+                 
+                  </table>
+</form>
+            </div>
+          </div>
+          <table class="customer-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Update Customer Details</th>
+                <th>Delete Customer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let customer of customers">
+                <td>{{ customer.id_no }}</td>
+                <td>
+                  <span *ngIf="!customer.editable">{{ customer.name }}</span>
+                  <input *ngIf="customer.editable" [(ngModel)]="customer.name" placeholder="Name">
+
+                </td>
+                <td>
+                  <span *ngIf="!customer.editable">{{ customer.address }}</span>
+                  <input *ngIf="customer.editable" [(ngModel)]="customer.address" placeholder="Address">
+                </td>
+                <td>
+                  <button class="delete-button" *ngIf="!customer.editable" (click)="toggleEdit(customer)">Edit</button>
+                  <button class="delete-button" *ngIf="customer.editable" (click)="confirmUpdate(customer)">Update</button>
+                  <button class="delete-button" *ngIf="customer.editable" (click)="cancelUpdate(customer)">Cancel</button>
+
+                </td>
+                <td>
+
+                  <button class="delete-button" *ngIf="!customer.showConfirm" (click)="toggleDelete(customer)">Delete</button>
+                  <!-- Confirm Delete and Cancel buttons -->
+                  <button class="delete-button" *ngIf="customer.showConfirm" (click)="deleteCustomer(customer)">Confirm Delete</button>
+                  <button class="delete-button" *ngIf="customer.showConfirm" (click)="cancelDelete(customer)">Cancel</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-container>
+        <ng-container *ngIf="activeTab === 'Publications'">
+          <table>
+            <tr>
+              <td>  <h2 class="customer-heading">Publications Details</h2></td>
+              <td></td>
+              <td> <button class="delete-button" (click)="showAddPublicationPopup = true">Add New Publication</button></td>
+            </tr>
+          </table>
+          <div class="modal-container" *ngIf="showAddPublicationPopup">
+            <div class="modal-content">
+              <h2>Add New Publication</h2>
+              <form (submit)="addPublication()">
+                <table>
+
+                  <tr>
+                    <td> <label for="name">Name:</label></td>
+                    <td>  <input type="text" id="name" name="name" [(ngModel)]="newPublication.name" required></td>
+                  </tr>
+                  <tr>
+                    <td> <label for="pub_type">Publication Type:</label></td>
+                    <td><input type="text" id="pub_type" name="pub_type" [(ngModel)]="newPublication.pub_type" required></td>
+                  </tr>
+                  <tr></tr>
+                  <tr>
+                    <td><button type="submit" class="delete-button">Add Publication</button></td>
+                    <td> <button class="delete-button" (click)="showAddPublicationPopup = false">Close</button></td>
+                  </tr>
+
+
+                </table>
+              </form>
+            </div>
+            </div>
+            <table class="customer-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Publication Type</th>
+                  <th>Update Publication Details</th>
+                  <th>Delete Publication</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let publication of publications">
+                  <td>{{ publication.name }}</td>
+
+                  <td>
+                    <span *ngIf="!publication.editable">{{ publication.pub_type }}</span>
+                    <input *ngIf="publication.editable" [(ngModel)]="publication.pub_type" placeholder="Publication Type">
+                  </td>
+                  <td>
+                    <button class="delete-button" *ngIf="!publication.editable" (click)="togglePublicationEdit(publication)">Edit</button>
+                    <button class="delete-button" *ngIf="publication.editable" (click)="confirmPublicationUpdate(publication)">Update</button>
+                    <button class="delete-button" *ngIf="publication.editable" (click)="cancelPublicationUpdate(publication)">Cancel</button>
+
+                  </td>
+                  <td>
+
+                    <button class="delete-button" *ngIf="!publication.showConfirm" (click)="togglePublicationDelete(publication)">Delete</button>
+                    <!-- Confirm Delete and Cancel buttons -->
+                    <button class="delete-button" *ngIf="publication.showConfirm" (click)="deletePublication(publication)">Confirm Delete</button>
+                    <button class="delete-button" *ngIf="publication.showConfirm" (click)="cancelPublicationDelete(publication)">Cancel</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+        </ng-container>
+        <ng-container *ngIf="activeTab === 'Subscription'">
+          <h2 class="customer-heading">Subscriptions Details</h2>
+          <table class="customer-table">
+            <thead>
+              <tr>
+                <th>Subbscription Id</th>
+                <th>Customer Id</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Price</th>
+                <th>Subscription Type</th>
+                <th>Update Subscription Details</th>
+                <th>Delete Subscription</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let subscription of subscriptions">
+                <td>{{ subscription.sub_id }}</td>
+
+                <td>
+                  <span *ngIf="!subscription.editable">{{ subscription.cust_id }}</span>
+                  <input *ngIf="subscription.editable" [(ngModel)]="subscription.cust_id" placeholder="Customer Id">
+                </td>
+                <td>
+                  <span *ngIf="!subscription.editable">{{ subscription.start_date }}</span>
+                  <input *ngIf="subscription.editable" [(ngModel)]="subscription.start_date" placeholder="Start Date">
+                </td>
+                <td>
+                  <span *ngIf="!subscription.editable">{{ subscription.end_date }}</span>
+                  <input *ngIf="subscription.editable" [(ngModel)]="subscription.end_date" placeholder="End Date">
+                </td>
+                <td>
+                  <span *ngIf="!subscription.editable">{{ subscription.price }}</span>
+                  <input *ngIf="subscription.editable" [(ngModel)]="subscription.price" placeholder="Price">
+                </td>
+                <td>
+                  <span *ngIf="!subscription.editable">{{ subscription.sub_type }}</span>
+                  <input *ngIf="subscription.editable" [(ngModel)]="subscription.sub_type" placeholder="Subscription Type">
+                </td>
+                <td>
+                  <button class="delete-button" *ngIf="!subscription.editable" (click)="toggleSubscriptionEdit(subscription)">Edit</button>
+                  <button class="delete-button" *ngIf="subscription.editable" (click)="confirmSubscriptionUpdate(subscription)">Update</button>
+                  <button class="delete-button" *ngIf="subscription.editable" (click)="cancelSubscriptionUpdate(subscription)">Cancel</button>
+
+                </td>
+                <td>
+
+                  <button class="delete-button" *ngIf="!subscription.showConfirm" (click)="toggleSubscriptionDelete(subscription)">Delete</button>
+                  <!-- Confirm Delete and Cancel buttons -->
+                  <button class="delete-button" *ngIf="subscription.showConfirm" (click)="deleteSubscription(subscription)">Confirm Delete</button>
+                  <button class="delete-button" *ngIf="subscription.showConfirm" (click)="cancelSubscriptionDelete(subscription)">Cancel</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          </ng-container>
+</div>
+
+</div>
+  </div>
+
+
+  <footer class="footer">
+    <!-- Footer content goes here -->
+  </footer>
+</div>
+
